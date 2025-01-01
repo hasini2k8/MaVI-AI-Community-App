@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Report Issue</title>
+  <style>
+    /* General Body Styles */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f4f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Container for the App */
+    .container {
+      width: 100%;
+      max-width: 400px;
+      height: 80vh;
+      background-color: #d2e7da;
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+      text-align: center;
+    }
+
+    /* Header Styles */
+    .header-widget {
+      background-color: #ffffff;
+      border-radius: 15px;
+      padding: 15px;
+      margin: 20px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      font-size: 24px;
+      margin: 10px 0;
+      color: #333;
+    }
+
+    /* Map Section */
+    .map {
+  width: 85%;
+  height: 70%; /* Adjust the height as needed */
+  margin: 10px auto;
+  border-radius: 15px;
+  border: 2px solid #4CAF50;
+  box-shadow: 0 4px 15px #00000033;
+  overflow: hidden;
+}
+
+#pac-input {
+  width: 80%;
+  margin: 0 auto; /* Center the input box horizontally */
+  padding: 12px;
+  border-radius: 15px;
+  background-color: rgba(236, 250, 210, 0.9);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+    /* Buttons Section */
+    .buttons {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .button {
+      width: calc(100% - 20px);
+      padding: 15px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #fff;
+      background-color: #4CAF50;
+      border-radius: 10px;
+      text-decoration: none;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease-in-out;
+    }
+
+    .button:hover {
+      background-color: #45a049;
+      transform: translateY(-3px);
+    }
+
+    /* Bottom Taskbar */
+    .bottom-nav {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background-color: #0c612d;
+      padding: 10px 0;
+      margin-top: auto;
+    }
+
+    .nav-icon {
+      width: 30px;
+      height: auto;
+      opacity: 0.8;
+      transition: 0.3s;
+    }
+
+    .nav-icon:hover {
+      opacity: 0.9;
+      transform: scale(1.1);
+    }
+
+   
+
+
+
+    /* Subtle Animations */
+    @keyframes slideUp {
+      from { transform: translateY(50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .map, .buttons, .bottom-nav {
+      animation: slideUp 0.5s ease-in-out;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header-widget">
+      <h1 id="greeting">Hello 🌱</h1>
+      <h1>Ready to be a Markham community hero?</h1>
+    </div>
+  
+    <!-- Map Section -->
+    <div class="map">
+      <div id="map" style="width: 100%; height: 100%;"></div>
+    </div>
+    <input id="pac-input" type="text" placeholder="Search for a location">
+    
+    <!-- Buttons Section -->
+    <div class="buttons">
+      <button class="button" onclick="window.location.href='/report';">🚦 Traffic Violation</button>
+      <button class="button" onclick="window.location.href='/report';">🏗️ Infrastructure</button>
+      <button class="button" onclick="window.location.href='/report';">🧹 Hygiene</button>
+      <button class="button" onclick="window.location.href='/report';">🌳 Environment</button>
+    </div>
+  
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+      <img src="/images/icon-home.png" alt="Home" class="nav-icon" onclick="window.location.href='/dashboard';">
+      <img src="/images/chat.png" alt="Chat" class="nav-icon" onclick="window.location.href='/chat';" style="width: 50px; height: auto;">
+      <img src="/images/user-icon.png" alt="Profile" class="nav-icon" onclick="window.location.href='/profile';">
+    </div>
+  </div>
+  
+  <script>
+  let map, marker;
+  
+  window.onload = function() {
+    const username = localStorage.getItem('username');
+    const greetingElement = document.getElementById('greeting');
+    if (username) {
+      greetingElement.textContent = `Hello ${username}🌱`;
+    } else {
+      greetingElement.textContent = 'Hello 🌱';
+    }
+    loadGoogleMaps();
+  };
+  
+  function loadGoogleMaps() {
+    const script = document.createElement('script');
+    script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCHUJFhv3Uh2DYrxfyti5XfUzkRQ2tn7Cc&libraries=places&callback=initMap';
+    script.async = true;
+    script.defer = true;
+    document.body.appendChild(script);
+  }
+  
+  function initMap() {
+    map = new google.maps.Map(document.getElementById('map'), {
+      center: { lat: 43.8561, lng: -79.3370 }, // Default to Markham
+      zoom: 13
+    });
+  
+    marker = new google.maps.Marker({
+      map: map,
+      draggable: true
+    });
+  
+    // Initialize the search box
+    const input = document.getElementById('pac-input');
+    const searchBox = new google.maps.places.SearchBox(input);
+  
+    map.addListener('bounds_changed', () => {
+      searchBox.setBounds(map.getBounds());
+    });
+  
+    searchBox.addListener('places_changed', () => {
+      const places = searchBox.getPlaces();
+  
+      if (places.length == 0) {
+        return;
+      }
+  
+      const bounds = new google.maps.LatLngBounds();
+      places.forEach((place) => {
+        if (!place.geometry || !place.geometry.location) {
+          console.log("Returned place contains no geometry");
+          return;
+        }
+  
+        marker.setPosition(place.geometry.location);
+        storeLocation(place.geometry.location.toJSON());
+  
+        if (place.geometry.viewport) {
+          bounds.union(place.geometry.viewport);
+        } else {
+          bounds.extend(place.geometry.location);
+        }
+      });
+      map.fitBounds(bounds);
+    });
+  
+    // Update stored location when marker is dragged
+    marker.addListener('dragend', () => {
+      storeLocation(marker.getPosition().toJSON());
+    });
+  }
+  
+  function storeLocation(location) {
+    localStorage.setItem('reportLocation', JSON.stringify(location));
+  }
+
+
+</script>
+
+</body>
+</html>

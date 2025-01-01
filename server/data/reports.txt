@@ -1,0 +1,144 @@
+
+  UniqueId: james_20241201-160722.
+  Username: james
+  Date: 12/1/2024, 11:07:22 AM
+  Category: Infrastructure
+  Location: {"lat":43.8566142,"lng":-79.3323283}
+  Description: There is a fire!
+  --------------------------------------------------------------
+  
+  UniqueId: hasini123_20241204-185324.
+  Username: hasini123
+  Date: 12/4/2024, 1:53:24 PM
+  Category: Traffic
+  Location: {"lat":43.8749274,"lng":-79.35834799999999}
+  Description: The pavement is broken so more prone to accident
+  --------------------------------------------------------------  
+  UniqueId: hasini123_20241206-183348.
+  Username: hasini123
+  Date: 12/6/2024, 1:33:48 PM
+  Category: Traffic
+  Location: {"lat":43.8749274,"lng":-79.35834799999999}
+  Description: There are too many accidents in this region
+  --------------------------------------------------------------
+  
+  UniqueId: HasiniTheScienceGuy_20241209-200557.
+  Username: HasiniTheScienceGuy
+  Date: 12/9/2024, 3:05:57 PM
+  Category: Hygiene
+  Location: {"lat":43.8566142,"lng":-79.3323283}
+  Description: The roads around highway 7 and Mackenzie Drive are kind of rubbish
+  --------------------------------------------------------------
+  
+  UniqueId: HasiniTheScienceGuy_20241211-150129.
+  Username: HasiniTheScienceGuy
+  Date: 12/11/2024, 10:01:29 AM
+  Category: Hygiene
+  Location: {"lat":43.8749274,"lng":-79.35834799999999}
+  Description: people smoke
+  --------------------------------------------------------------
+  
+  UniqueId: HasiniTheScienceGuy_20241211-150628.
+  Username: HasiniTheScienceGuy
+  Date: 12/11/2024, 10:06:28 AM
+  Category: Hygiene
+  Location: {"lat":40.7579747,"lng":-73.9855426}
+  Description: its ugly
+  --------------------------------------------------------------
+  
+  UniqueId: HasiniTheScienceGuy_20241211-150638.
+  Username: HasiniTheScienceGuy
+  Date: 12/11/2024, 10:06:38 AM
+  Category: Hygiene
+  Location: {"lat":40.7579747,"lng":-73.9855426}
+  Description: gkgkyffkkj
+  --------------------------------------------------------------
+  
+  UniqueId: HasiniTheScienceGuy_20241211-150723.
+  Username: HasiniTheScienceGuy
+  Date: 12/11/2024, 10:07:23 AM
+  Category: Hygiene
+  Location: {"lat":43.8749274,"lng":-79.35834799999999}
+  Description: ugly
+  --------------------------------------------------------------
+  
+  UniqueId: hasini2k8_20241223-174650.
+  Username: hasini2k8
+  Date: 12/23/2024, 12:46:50 PM
+  Category: Infrastructure
+  Location: {"lat":43.85784999999999,"lng":-79.35967}
+  Description: There is pothole near the intersection and I feel that it has to be fixed since one of my colleague's car tire got stuck in it.
+  --------------------------------------------------------------
+  
+  UniqueId: hasini2k8_20241231-013221.
+  Username: hasini2k8
+  Date: 12/30/2024, 8:32:21 PM
+  Category: Traffic
+  Location: {"lat":43.85196800000001,"lng":-79.33595009999999}
+  Description: Cars are not stopping at pedestrian crossing during school time
+  --------------------------------------------------------------
+  
+  UniqueId: hasini2k8_20241231-182231.
+  Username: hasini2k8
+  Date: 12/31/2024, 1:22:31 PM
+  Category: Hygiene
+  Location: {"lat":43.841435241075224,"lng":-79.32418007314453}
+  Description: garbage strewn on road
+  --------------------------------------------------------------
+  
+  UniqueId: inbasri2k2_20241231-213616.
+  Username: inbasri2k2
+  Date: 12/31/2024, 4:36:16 PM
+  Category: Environment
+  Location: {"lat":43.8927624,"lng":-79.2299441}
+  Description: students are not having a safe environment.  There are hazardous pollutants in nearby park.
+  --------------------------------------------------------------
+  
+  UniqueId: inbasri2k2_20241231-215510.
+  Username: inbasri2k2
+  Date: 12/31/2024, 4:55:10 PM
+  Category: Environment
+  Location: {"lat":43.8927624,"lng":-79.2299441}
+  Description: There are too much pollutants!
+  --------------------------------------------------------------
+  
+  UniqueId: inbasri2k2_20241231-230049.
+  Username: inbasri2k2
+  Date: 12/31/2024, 6:00:49 PM
+  Category: Environment
+  Location: {"lat":43.8927624,"lng":-79.2299441}
+  Description: Too much polluting garbage near school park.
+  --------------------------------------------------------------
+  
+  UniqueId: inbasri2k2_20241231-230821.
+  Username: inbasri2k2
+  Date: 12/31/2024, 6:08:21 PM
+  Category: Environment
+  Location: {"lat":43.89251498782426,"lng":-79.22831331691894}
+  Description: This is 4th environment issue
+  --------------------------------------------------------------
+  
+  UniqueId: hasiniTest_20241231-231648.
+  Username: hasiniTest
+  Date: 12/31/2024, 6:16:48 PM
+  Category: Traffic
+  Location: {"lat":43.8707,"lng":-79.22381}
+  Description: lot of pedestrians cross coppercreek drive but no pedestrian crossing.  Risk for kids and senior citizens.
+  --------------------------------------------------------------
+  
+  UniqueId: hasiniTest_20241231-231718.
+  Username: hasiniTest
+  Date: 12/31/2024, 6:17:18 PM
+  Category: Traffic
+  Location: {"lat":43.8708,"lng":-79.22344}
+  Description: require pedestrian crossing
+  --------------------------------------------------------------
+  
+  UniqueId: Inbasri_20250101-183215.
+  Username: Inbasri
+  Date: 1/1/2025, 1:32:15 PM
+  Category: Hygiene
+  Location: {"lat":43.852480694101665,"lng":-79.31542510302734}
+  Description: Garbage in the corner of the road
+  --------------------------------------------------------------
+  

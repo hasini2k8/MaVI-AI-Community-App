@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile</title>
+  <style>
+    /* General Body Styles */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f4f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Container for the App */
+    .container {
+      width: 100%;
+      max-width: 400px;
+      height: 80vh;
+      background-color: #d2e7da;
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+      text-align: center;
+    }
+
+    /* Header Styles */
+    .header-widget {
+      background-color: #ffffff;
+      border-radius: 15px;
+      padding: 15px;
+      margin: 20px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      font-size: 24px;
+      margin: 10px 0;
+      color: #333;
+    }
+
+    /* Profile Picture */
+    .profile-pic-container {
+      margin: 10px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .profile-pic {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      margin-bottom: 10px;
+      object-fit: cover;
+    }
+
+    /* Upload Button */
+    .upload-btn {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: #fff;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .upload-btn:hover {
+      background-color: #45a049;
+      transform: translateY(-2px);
+    }
+
+    /* Rating Section */
+    .rating {
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+      margin: 10px 0;
+    }
+
+    .star {
+      width: 24px;
+      height: 24px;
+      background-color: #FFD700;
+      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    }
+
+    /* Buttons Section */
+    .buttons {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .button {
+      width: calc(100% - 20px);
+      padding: 15px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #fff;
+      background-color: #4CAF50;
+      border-radius: 10px;
+      text-decoration: none;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease-in-out;
+    }
+
+    .button:hover {
+      background-color: #45a049;
+      transform: translateY(-3px);
+    }
+
+    /* Bottom Taskbar */
+    .bottom-nav {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background-color: #0c612d;
+      padding: 10px 0;
+      margin-top: auto;
+    }
+
+    .nav-icon {
+      width: 30px;
+      height: auto;
+      opacity: 0.8;
+      transition: 0.3s;
+    }
+
+    .nav-icon:hover {
+      opacity: 0.9;
+      transform: scale(1.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header-widget">
+      <h1 id="greeting">Hello 🌱</h1>
+      <h2>User Profile</h2>
+    </div>
+  
+    <!-- Profile Picture Section -->
+    <div class="profile-pic-container">
+      <img id="profile-pic" class="profile-pic" src="/images/default-profile.png" alt="Profile Picture">
+      <input type="file" id="profile-upload" class="upload-btn" onchange="updateProfilePic()">
+    </div>
+
+    <!-- Rating Section -->
+    <div class="rating" id="rating">
+      <!-- Placeholder for star rating -->
+    </div>
+
+    <!-- Buttons Section -->
+    <div class="buttons">
+      <button class="button" onclick="window.location.href='/dashboard';">Back to Dashboard</button>
+    </div>
+  
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+      <img src="/images/icon-home.png" alt="Home" class="nav-icon" onclick="window.location.href='/dashboard';">
+      <img src="/images/chat.png" alt="Chat" class="nav-icon" onclick="window.location.href='/chat';" style="width: 50px; height: auto;">
+      <img src="/images/user-icon.png" alt="Profile" class="nav-icon" onclick="window.location.href='/profile';">
+    </div>
+  </div>
+  
+  <script>
+  window.onload = function() {
+    const username = localStorage.getItem('username');
+    const greetingElement = document.getElementById('greeting');
+    if (username) {
+      greetingElement.textContent = `Hello ${username}🌱`;
+    } else {
+      greetingElement.textContent = 'Hello 🌱';
+    }
+    displayStarRating(); 
+  };
+
+ async function displayStarRating() {
+    const ratingElement = document.getElementById('rating');
+    let username = localStorage.getItem('username');
+
+    const response = await fetch('/userPoints', {
+      method: 'POST',
+      headers: {
+         'Content-Type': 'application/json',
+       },
+      body: JSON.stringify({username})
+    });
+
+  const data = await response.json();
+  const userPointsForUsername = parseInt(data.userPoints);
+
+  console.log("hasini",userPointsForUsername);
+
+  if (userPointsForUsername <= 0) {
+    for (let i = 0; i < 1; i++) {
+      const star = document.createElement('div');
+      star.classList.add('star');
+      star.style.backgroundColor = '#ffc107'; // Yellow for filled star
+      ratingElement.appendChild(star);
+    }
+  } else if (0<userPointsForUsername && userPointsForUsername <= 10) {
+    for (let i = 0; i < 2; i++) {
+      const star = document.createElement('div');
+      star.classList.add('star');
+      star.style.backgroundColor = '#ffc107'; // Yellow for filled star
+      ratingElement.appendChild(star);
+    }
+  } else if (10 < userPointsForUsername && userPointsForUsername <= 20) {
+    console.log("hasini 2");
+    for (let i = 0; i < 3; i++) {
+      const star = document.createElement('div');
+      star.classList.add('star');
+      star.style.backgroundColor = '#ffc107'; // Yellow for filled star
+      ratingElement.appendChild(star);
+    }
+  } else if (20<userPointsForUsername && userPointsForUsername <= 30) {
+    for (let i = 0; i < 4; i++) {
+      const star = document.createElement('div');
+      star.classList.add('star');
+      star.style.backgroundColor = '#ffc107'; // Yellow for filled star
+      ratingElement.appendChild(star);
+    }
+  } else {
+    console.log("hasini 3");
+    for (let i = 0; i < 5; i++) {
+      const star = document.createElement('div');
+      star.classList.add('star');
+      star.style.backgroundColor = '#ffc107'; // Yellow for filled star
+      ratingElement.appendChild(star);
+    }
+  }
+}
+
+  function updateProfilePic() {
+    const fileInput = document.getElementById('profile-upload');
+    const profilePic = document.getElementById('profile-pic');
+
+    const file = fileInput.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        profilePic.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+  </script>
+</body>
+</html>

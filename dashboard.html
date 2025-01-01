@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incident Monitoring Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        #header {
+            background-color: #31a943;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #main-content {
+            display: flex;
+            flex: 1;
+        }
+        #map {
+            flex: 2;
+            height: calc(100vh - 60px);
+        }
+        #sidebar {
+            flex: 1;
+            background-color: white;
+            padding: 20px;
+            overflow-y: auto;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+        }
+        .stat-box {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .stat-box h3 {
+            margin: 0;
+            font-size: 14px;
+            color: #6c757d;
+        }
+        .stat-box p {
+            margin: 10px 0 0;
+            font-size: 24px;
+            font-weight: bold;
+            color: #43de7e;
+        }
+        #incident-list {
+            margin-top: 20px;
+        }
+        .incident-item {
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .incident-item:hover {
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <h1>Incident Monitoring Dashboard</h1>
+        <div id="last-updated"></div>
+    </div>
+    <div id="main-content">
+        <div id="map"></div>
+        <div id="sidebar">
+            <div id="stats-container">
+                <div class="stat-box">
+                    <h3>Total Incidents</h3>
+                    <p id="total-incidents">0</p>
+                </div>
+                <div class="stat-box">
+                    <h3>Active Incidents</h3>
+                    <p id="active-incidents">0</p>
+                </div>
+            </div>
+            <div id="incident-list">
+                <h2>Recent Incidents</h2>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHUJFhv3Uh2DYrxfyti5XfUzkRQ2tn7Cc&libraries=places&callback=initMap" async defer></script>
+    <script>
+        let incidents = [];
+        let currentIncidentList = [];
+        let map;
+
+        async function fetchIncidents() {
+            try{
+                const response = await fetch('/api/incidents');
+                const data = await response.json();
+
+                incidents = data;
+                updateDashboard();
+            }
+            catch (error) {
+                console.error('Error fetching incidents: ', error);
+            }
+
+        }
+
+        function initMap() {
+            const markham = { lat: 43.8561, lng: -79.3370 };
+            map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 12,
+                center: markham,
+                styles: [
+                    { elementType: 'geometry', stylers: [{ color: '#f5f5f5' }] },
+                    { elementType: 'labels.icon', stylers: [{ visibility: 'off' }] },
+                    { elementType: 'labels.text.fill', stylers: [{ color: '#616161' }] },
+                    { elementType: 'labels.text.stroke', stylers: [{ color: '#f5f5f5' }] },
+                    { featureType: 'administrative.land_parcel', elementType: 'labels.text.fill', stylers: [{ color: '#bdbdbd' }] },
+                    { featureType: 'poi', elementType: 'geometry', stylers: [{ color: '#eeeeee' }] },
+                    { featureType: 'poi', elementType: 'labels.text.fill', stylers: [{ color: '#757575' }] },
+                    { featureType: 'poi.park', elementType: 'geometry', stylers: [{ color: '#e5e5e5' }] },
+                    { featureType: 'poi.park', elementType: 'labels.text.fill', stylers: [{ color: '#9e9e9e' }] },
+                    { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#ffffff' }] },
+                    { featureType: 'road.arterial', elementType: 'labels.text.fill', stylers: [{ color: '#757575' }] },
+                    { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#dadada' }] },
+                    { featureType: 'road.highway', elementType: 'labels.text.fill', stylers: [{ color: '#616161' }] },
+                    { featureType: 'road.local', elementType: 'labels.text.fill', stylers: [{ color: '#9e9e9e' }] },
+                    { featureType: 'transit.line', elementType: 'geometry', stylers: [{ color: '#e5e5e5' }] },
+                    { featureType: 'transit.station', elementType: 'geometry', stylers: [{ color: '#eeeeee' }] },
+                    { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#c9c9c9' }] },
+                    { featureType: 'water', elementType: 'labels.text.fill', stylers: [{ color: '#9e9e9e' }] }
+                ]
+            });
+
+            fetchIncidents();
+            setInterval(fetchIncidents, 60000); // Refresh every minute
+        }
+
+        function updateDashboard() {
+            updateMap();
+            updateStats();
+            updateLastUpdated();
+        }
+
+        function updateMap() {
+            // Clear existing markers
+            for (let i = map.data.length - 1; i >= 0; i--) {
+                 const feature = map.data.getFeatureIndex(i);
+                 map.data.remove(feature);
+            }
+            
+            for (let i = 0; i < incidents.length; i++) {
+                const incident = incidents[i];
+                if (incident.incidentList[0].latitude && incident.incidentList[0].longitude) {
+                    const feature = new google.maps.Data.Feature({
+                    geometry: new google.maps.LatLng(incident.incidentList[0].latitude, incident.incidentList[0].longitude),
+                    properties: {
+                        incidentList: incident.incidentList,
+                        incidentId: incident.incidentId,
+                        occurences: incident.occurences,
+                        category: incident.incidentList[0].category
+                    }
+                    });
+                    map.data.add(feature);
+                }
+            }
+
+            map.data.setStyle(function(feature) {
+                let fillColor;
+                let scale;
+
+                if (feature.getProperty('category') == 'Hygiene') {
+                    fillColor = 'green';
+                } else if (feature.getProperty('category') == 'Traffic') {
+                    fillColor = 'blue';
+                } else if (feature.getProperty('category') == 'Infrastructure') {
+                    fillColor = 'red';
+                } else {
+                    fillColor = 'orange';
+                }
+
+                if (feature.getProperty('occurences') == 1) {
+                    scale = 8;
+                } else if (feature.getProperty('occurences') == 2) {
+                    scale = 12;
+                } else {
+                    scale = 16;
+                }
+
+                
+                return {
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        fillColor: fillColor,
+                        fillOpacity: 0.8,
+                        scale: scale,
+                        strokeColor: 'white',
+                        strokeWeight: 2
+                    }
+                };
+            });
+
+            map.data.addListener('click', function(event) {
+                const clickedIncident = {
+                    category: event.feature.getProperty('category'),
+                    incidentList: event.feature.getProperty('incidentList'),
+                    occurences: event.feature.getProperty('occurences')
+                };
+                
+                displayIncidentList(clickedIncident); // Pass the clicked incident
+            });
+}
+
+        function displayIncidentList(incident) {
+            console.log(incident);
+            currentIncidentList = incident.incidentList;
+            const listContainer = document.getElementById('incident-list');
+            listContainer.innerHTML = ''; // Clear previous content
+
+            if (incident) {
+                const incidentListContainer = document.createElement('div');
+                incidentListContainer.className = 'incident-list';
+
+
+                // Display incident category and occurrences
+                const incidentSummary = document.createElement('div');
+                incidentSummary.innerHTML = `
+                <div>
+                    <span style="color: #333; font-weight: bold;">Category:</span> 
+                    <span style="color: #555;">${incident.category}</span><br>
+                    <span style="color: #333; font-weight: bold;">Occurences:</span> 
+                    <span style="color: #555;">${incident.occurences}</span>
+                </div>
+                `;
+                incidentListContainer.appendChild(incidentSummary);
+
+                // Loop through each incident in the incidentList
+                for (const incidentItem of incident.incidentList) {
+                const item = document.createElement('div');
+                item.className = 'incident-item';
+                item.style.padding = '15px';
+                item.style.borderRadius = '5px';
+                item.style.backgroundColor = '#f8f9fa'; 
+                item.style.boxShadow = '0 2px 5px rgba(0, 0, 0, 0.1)'; 
+
+                item.innerHTML = `
+                    <div>
+                    <span style="color: #333; font-weight: bold;">Description:</span> 
+                    <span style="color: #555;">${incidentItem.description}</span><br>
+                    <span style="color: #333; font-weight: bold;">Reported By:</span> 
+                    <span style="color: #555;">${incidentItem.username}</span><br>
+                    <span style="color: #333; font-weight: bold;">Date Reported:</span> 
+                    <span style="color: #555;">${incidentItem.date}</span><br>
+                    <span style="color: #333; font-weight: bold;">Unique ID:</span> 
+                    <span style="color: #555;">${incidentItem.uniqueId}</span><br>
+                    </div>
+                `;
+                incidentListContainer.appendChild(item);
+                }
+                
+                // Append the container with all incidents to the main list container
+                listContainer.appendChild(incidentListContainer);
+                
+                // Add the action buttons section after displaying incidents
+                const actionButtonsSection = document.createElement('div');
+                actionButtonsSection.style.marginTop = '15px'; // Add spacing
+                actionButtonsSection.innerHTML = `
+                <div>
+                    <input type="radio" id="validIssue" name="issueStatus" value="valid">
+                    <label for="validIssue">Valid Issue</label><br>
+                    <input type="radio" id="invalidIssue" name="issueStatus" value="invalid">
+                    <label for="invalidIssue">Invalid Issue</label><br>
+                    <button style="background-color: #4CAF50; color: white; padding: 10px 15px; border: none; border-radius: 3px;" 
+                            onclick="handleIssueStatus()">Issue Solved</button>
+                </div>
+                `;
+                listContainer.appendChild(actionButtonsSection);
+                
+            } else {
+                listContainer.innerHTML = '<h2>Incident Details</h2>';
+                // ... existing logic to display recent incidents (optional)
+            }
+        }
+
+        function handleIssueStatus() {
+
+            const isIssueValid = document.getElementById('validIssue').checked;
+            incidentList = currentIncidentList;
+  
+            const data = { 
+                incidentList: incidentList, 
+                isIssueValid: isIssueValid 
+                };
+            
+            console.log(data);
+
+            fetch('/update-user-points', {
+                method: 'POST', // HTTP method
+                headers: { 'Content-Type': 'application/json' }, // Set content type
+                body: JSON.stringify(data) // Convert data to JSON string
+            })
+            .then(response => response.text()) // Parse response as text
+            .then(data => {
+                alert(data); 
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error updating user points.');
+            });
+        }
+
+        function updateStats() {
+            document.getElementById('total-incidents').textContent = incidents.length;
+            const activeIncidents = incidents.filter(incident => incident.status === 'active').length;
+            document.getElementById('active-incidents').textContent = activeIncidents;
+        }
+
+
+
+        function updateLastUpdated() {
+            const now = new Date();
+            document.getElementById('last-updated').textContent = `Last updated: ${now.toLocaleString()}`;
+        }
+    </script>
+</body>
+</html>

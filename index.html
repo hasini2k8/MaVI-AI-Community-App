@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MaVI Knowledge Chatbot</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            height: 80vh;
+            background-color: #d2e7da;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .chat-header {
+            background-color: #ab170c;
+            color: white;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .chat-header .profile-icon {
+            width: 40px;
+            height: 40px;
+            margin-right: 15px;
+            border-radius: 50%;
+        }
+
+        .chat-header-info {
+            flex-grow: 1;
+        }
+
+        .chat-header-name {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+
+        .chat-header-status {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        #chat-messages {
+            flex-grow: 1;
+            overflow-y: scroll;
+            padding: 20px;
+            background-color: #e5ddd5;
+        }
+
+        .message {
+            max-width: 75%;
+            margin-bottom: 15px;
+            position: relative;
+            animation: fadeIn 0.3s ease-out;
+            display: flex;
+            align-items: flex-end;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user {
+            margin-left: auto;
+            flex-direction: row-reverse;
+        }
+
+        .mavi {
+            margin-right: auto;
+        }
+
+        .textContainer {
+            padding: 10px 15px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            border-radius: 18px;
+            max-width: calc(100% - 50px);
+        }
+
+        .user .textContainer {
+            background-color: #dcf8c6;
+            border-top-right-radius: 0;
+        }
+
+        .mavi .textContainer {
+            background-color: #ffffff;
+            border-top-left-radius: 0;
+        }
+
+        .profile-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin: 0 5px;
+        }
+
+        .message p {
+            margin: 0;
+        }
+
+        .message p:first-child {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+            color: #366056;
+        }
+
+        .input-container {
+            display: flex;
+            padding: 15px;
+            background-color: #f0f0f0;
+            align-items: center;
+        }
+
+        #user-input {
+            flex-grow: 1;
+            padding: 12px 20px;
+            border-radius: 25px;
+            border: none;
+            font-size: 16px;
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        button {
+            padding: 12px;
+            background-color: #128C7E;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            margin-left: 10px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+
+        button:hover {
+            background-color: #075E54;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        #chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        #chat-messages::-webkit-scrollbar-thumb {
+            background-color: rgba(0,0,0,0.2);
+            border-radius: 3px;
+        }
+        
+        #chat-messages::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(0,0,0,0.3);
+        }
+
+        /* Bottom Taskbar */
+        .bottom-nav {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background-color: #0c612d;
+            padding: 10px 0;
+        }
+
+        .nav-icon {
+            width: 30px;
+            height: auto;
+            opacity: 0.8;
+            transition: 0.3s;
+        }
+
+        .nav-icon:hover {
+            opacity: 0.9;
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="chat-header">
+            <img src="/images/mavi-icon.png" alt="MaVI" class="profile-icon">
+            <div class="chat-header-info">
+                <div class="chat-header-name">MaVI</div>
+                <div class="chat-header-status">Online</div>
+            </div>
+        </div>
+        <div id="chat-messages"></div>
+        <div class="input-container">
+            <input type="text" id="user-input" placeholder="Type your message...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <img src="/images/icon-home.png" alt="Home" class="nav-icon" onclick="window.location.href='/dashboard';">
+            <img src="/images/chat.png" alt="Chat" class="nav-icon" onclick="window.location.href='/chat';" style="width: 50px; height: auto;">
+            <img src="/images/user-icon.png" alt="Profile" class="nav-icon" onclick="window.location.href='/profile';">
+        </div>
+    </div>
+
+    <script>
+        async function sendMessage() {
+            const input = document.getElementById('user-input');
+            const message = input.value.trim();
+            if (message === '') return;
+            input.value = '';
+
+            displayMessage('User', message);
+
+            const response = await fetch('/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message }),
+            });
+
+            const data = await response.json();
+            displayMessage('MaVI', data.response);
+        }
+
+        function displayMessage(sender, message) {
+            const chatMessages = document.getElementById('chat-messages');
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message', sender.toLowerCase());
+
+            const profileIcon = document.createElement('img');
+            profileIcon.classList.add('profile-icon');
+
+            if (sender === 'User') {
+                profileIcon.src = '/images/user-icon.png';
+            } else {
+                profileIcon.src = '/images/mavi-icon.png';
+            }
+
+            const textContainer = document.createElement('div');
+            textContainer.classList.add('textContainer');
+
+            const senderElement = document.createElement('p');
+            senderElement.textContent = sender;
+
+            const messageTextElement = document.createElement('p');
+            messageTextElement.textContent = message;
+
+            textContainer.appendChild(senderElement);
+            textContainer.appendChild(messageTextElement);
+            
+            if (sender === 'User') {
+                messageElement.appendChild(textContainer);
+                messageElement.appendChild(profileIcon);
+            } else {
+                messageElement.appendChild(profileIcon);
+                messageElement.appendChild(textContainer);
+            }
+            
+            chatMessages.appendChild(messageElement);
+
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+    </script>
+    
+</body>
+</html>

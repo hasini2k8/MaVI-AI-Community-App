@@ -1,0 +1,38 @@
+{
+  "name": "knowledge-chatbot",
+  "version": "1.0.0",
+  "description": "A Node.js web application using vector database and OpenAI for a knowledge chatbot",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "populate": "node populate_db.js",
+    "dev": "nodemon server.js"
+    
+  },
+  "keywords": [
+    "chatbot",
+    "openai",
+    "vector-database",
+    "node",
+    "express"
+  ],
+  "author": "Your Name",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "openai": "^3.2.1",
+    "vectra": "^0.4.3",
+    "pdf-parse": "^1.1.1",
+    "path": "^0.12.7",
+    "geolib": "^3.3.4"
+
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eco Markham Login</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #a8e063, #56ab2f);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 400px;
+      height: 80vh;
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+      text-align: center;
+    }
+
+    .preloader {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: fadeOutPreloader 1s forwards ease-in-out;
+      animation-delay: 3s;
+    }
+
+    .preloader .leaf-container {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .preloader .leaf {
+      width: 20px;
+      height: 40px;
+      background: #56ab2f;
+      border-radius: 50% 50% 0 0;
+      transform-origin: bottom center;
+      animation: growShrink 1.5s infinite ease-in-out;
+    }
+
+    .preloader .leaf:nth-child(1) { animation-delay: 0s; transform: rotate(-30deg); }
+    .preloader .leaf:nth-child(2) { animation-delay: 0.3s; }
+    .preloader .leaf:nth-child(3) { animation-delay: 0.6s; transform: rotate(30deg); }
+
+    .preloader p {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #333;
+      animation: textFade 1.5s infinite alternate;
+    }
+
+    @keyframes growShrink {
+      0%, 100% { transform: scaleY(0.8); opacity: 0.8; }
+      50% { transform: scaleY(1.2); opacity: 1; }
+    }
+
+    @keyframes textFade {
+      0% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+
+    @keyframes fadeOutPreloader {
+      0% { opacity: 1; }
+      100% { opacity: 0; visibility: hidden; }
+    }
+
+    .login-container {
+      text-align: center;
+      width: 80%;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 15px;
+      box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2);
+      padding: 30px;
+      margin: auto;
+      transition: all 0.3s ease;
+      opacity: 0;
+      transform: translateY(50px);
+      animation: slideInFade 0.8s forwards ease-in-out;
+      animation-delay: 3.5s;
+    }
+
+    .login-container:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 24px rgba(31, 38, 135, 0.3);
+    }
+
+    .login-container img {
+      width: 120px;
+      margin-bottom: 20px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .login-container h1 {
+      font-size: 24px;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .login-container input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 2px solid #a8e063;
+      border-radius: 10px;
+      font-size: 14px;
+      background: rgba(255, 255, 255, 0.8);
+      transition: all 0.3s;
+    }
+
+    .login-container input:focus {
+      outline: none;
+      border-color: #56ab2f;
+      box-shadow: 0 0 8px rgba(86, 171, 47, 0.4);
+      background: #ffffff;
+    }
+
+    .login-container button {
+      width: 100%;
+      padding: 12px;
+      background-color: #56ab2f;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      transition: all 0.3s;
+      margin-top: 10px;
+    }
+
+    .login-container button:hover {
+      background-color: #4a9428;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .forgot-password {
+      display: block;
+      margin-top: 15px;
+      font-size: 13px;
+      color: #56ab2f;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .forgot-password:hover {
+      color: #4a9428;
+    }
+
+    .error {
+      color: #ff6b6b;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    @keyframes slideInFade {
+      0% { opacity: 0; transform: translateY(50px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .eco-footer {
+      position: absolute;
+      bottom: 10px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 12px;
+      color: #4a9428;
+      opacity: 0;
+      animation: fadeIn 1s forwards;
+      animation-delay: 4s;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="preloader">
+      <div class="leaf-container">
+        <div class="leaf"></div>
+        <div class="leaf"></div>
+        <div class="leaf"></div>
+      </div>
+      <p>Eco Markham</p>
+    </div>
+
+    <div class="login-container">
+      <img src="/images/green.png" alt="Eco Markham Logo" />
+      <h1>Welcome to Eco Markham</h1>
+      <form id="loginForm">
+        <input type="email" id="email" placeholder="Email" required />
+        <input type="text" id="username" placeholder="Username" required />
+        <input type="password" id="password" placeholder="Password" required />
+        <span id="error-message" class="error"></span>
+        <button type="button" onclick="validateLogin()">Login</button>
+      </form>
+      <a href="#" class="forgot-password">Forgot Password?</a>
+    </div>
+
+    <div class="eco-footer">
+      Together for a Greener Markham
+    </div>
+  </div>
+
+  <script>
+    window.onload = () => {
+      setTimeout(() => {
+        document.querySelector('.preloader').style.display = 'none';
+        document.querySelector('.login-container').style.display = 'block';
+      }, 3500);
+    };
+
+    function validateLogin() {
+      const email = document.getElementById("email").value;
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+      const errorMessage = document.getElementById("error-message");
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!emailRegex.test(email)) {
+        errorMessage.textContent = "Please enter a valid email.";
+        return;
+      } else if (username.trim() === "") {
+        errorMessage.textContent = "Please enter your username.";
+        return;
+      } else if (password.trim() === "") {
+        errorMessage.textContent = "Please enter your password.";
+        return;
+      } else {
+        errorMessage.textContent = "";
+        localStorage.setItem('username', username);
+        window.location.href = '/dashboard';       
+      }
+    }
+  </script>
+</body>
+</html>
