@@ -2,7 +2,6 @@
   "name": "knowledge-chatbot",
   "version": "1.0.0",
   "description": "A Node.js web application using vector database and OpenAI for a knowledge chatbot",
-  "main": "server.js",
   "type": "commonjs",
   "scripts": {
     "start": "node server.js",

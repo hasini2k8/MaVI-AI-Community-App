@@ -142,3 +142,50 @@
   Description: Garbage in the corner of the road
   --------------------------------------------------------------
   
+  UniqueId: hvijayin-20250101T233642
+  Username: hvijayin
+  Date: 20250101T233642
+  Category: Environment
+  Location: {"lat":43.87020529999999,"lng":-79.2872434}
+  Description: The plants are too dry and there are barely any trees.
+  --------------------------------------------------------------
+  
+  UniqueId: hvijayin-20250101T234059
+  Username: hvijayin
+  Date: 20250101T234059
+  Category: Environment
+  Location: {"lat":43.87020529999999,"lng":-79.2872434}
+  Description: There are barely any trees in the area and too much drought
+  --------------------------------------------------------------
+  
+  UniqueId: hvijayin-20250101T234240
+  Username: hvijayin
+  Date: 20250101T234240
+  Category: Environment
+  Location: {"lat":43.87020529999999,"lng":-79.2872434}
+  Description: No trees!
+  --------------------------------------------------------------
+  
+  UniqueId: hvijayin-20250102T002145
+  Username: hvijayin
+  Date: 20250102T002145
+  Category: Infrastructure
+  Location: {"lat":43.8578863,"lng":-79.3223502}
+  Description: THe roads have potholes which causes water to stagnate and also risky for drivers.
+  --------------------------------------------------------------
+  
+UniqueId: jackSparrow01-20250102T050334
+Username: jackSparrow01
+Date: 20250102T050334
+Category: Environment
+Location: {"lat":43.837852,"lng":-79.3050509}
+Description: This is a big environment issue
+--------------------------------------------------------------
+
+UniqueId: stephen-20250102T050604
+Username: stephen
+Date: 20250102T050604
+Category: Traffic
+Location: {"lat":43.8843714,"lng":-79.2296056}
+Description: No pedestrian cross available near busy junction
+--------------------------------------------------------------

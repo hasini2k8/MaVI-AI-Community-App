@@ -1,4 +1,8 @@
-HasiniTheScienceGuy:10
+HasiniTheScienceGuy:20
 hasini2k8:50
 hasiniTest:20
-inbasri2k2:0
+inbasri2k2:20
+hvijayin:25
+Inbasri:-5
+jackSparrow01:10
+stephen:10

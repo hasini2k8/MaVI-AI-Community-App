@@ -86,10 +86,6 @@
                     <h3>Total Incidents</h3>
                     <p id="total-incidents">0</p>
                 </div>
-                <div class="stat-box">
-                    <h3>Active Incidents</h3>
-                    <p id="active-incidents">0</p>
-                </div>
             </div>
             <div id="incident-list">
                 <h2>Recent Incidents</h2>
@@ -223,76 +219,103 @@
             });
 }
 
-        function displayIncidentList(incident) {
-            console.log(incident);
-            currentIncidentList = incident.incidentList;
-            const listContainer = document.getElementById('incident-list');
-            listContainer.innerHTML = ''; // Clear previous content
+async function displayIncidentList(incident) {
+    console.log(incident);
+    currentIncidentList = incident.incidentList;
+    const listContainer = document.getElementById('incident-list');
+    listContainer.innerHTML = ''; // Clear previous content
 
-            if (incident) {
-                const incidentListContainer = document.createElement('div');
-                incidentListContainer.className = 'incident-list';
+    if (incident) {
+        const incidentListContainer = document.createElement('div');
+        incidentListContainer.className = 'incident-list';
 
 
-                // Display incident category and occurrences
-                const incidentSummary = document.createElement('div');
-                incidentSummary.innerHTML = `
-                <div>
-                    <span style="color: #333; font-weight: bold;">Category:</span> 
-                    <span style="color: #555;">${incident.category}</span><br>
-                    <span style="color: #333; font-weight: bold;">Occurences:</span> 
-                    <span style="color: #555;">${incident.occurences}</span>
-                </div>
-                `;
-                incidentListContainer.appendChild(incidentSummary);
+        // Display incident category and occurrences
+        const incidentSummary = document.createElement('div');
+        incidentSummary.innerHTML = `
+        <div>
+            <span style="color: #333; font-weight: bold;">Category:</span> 
+            <span style="color: #555;">${incident.category}</span><br>
+            <span style="color: #333; font-weight: bold;">Occurrences:</span> 
+            <span style="color: #555;">${incident.occurences}</span>
+        </div>
+        `;
+        incidentListContainer.appendChild(incidentSummary);
 
-                // Loop through each incident in the incidentList
-                for (const incidentItem of incident.incidentList) {
-                const item = document.createElement('div');
-                item.className = 'incident-item';
-                item.style.padding = '15px';
-                item.style.borderRadius = '5px';
-                item.style.backgroundColor = '#f8f9fa'; 
-                item.style.boxShadow = '0 2px 5px rgba(0, 0, 0, 0.1)'; 
+        // Loop through each incident in the incidentList
+        for (const incidentItem of incident.incidentList) {
+            const item = document.createElement('div');
+            item.className = 'incident-item';
+            item.style.padding = '15px';
+            item.style.borderRadius = '5px';
+            item.style.backgroundColor = '#f8f9fa'; 
+            item.style.boxShadow = '0 2px 5px rgba(0, 0, 0, 0.1)'; 
+            
+            const imageUrl = `${incidentItem.uniqueId}.jpg`;
+            let userPoints=0;
 
-                item.innerHTML = `
-                    <div>
-                    <span style="color: #333; font-weight: bold;">Description:</span> 
-                    <span style="color: #555;">${incidentItem.description}</span><br>
-                    <span style="color: #333; font-weight: bold;">Reported By:</span> 
-                    <span style="color: #555;">${incidentItem.username}</span><br>
-                    <span style="color: #333; font-weight: bold;">Date Reported:</span> 
-                    <span style="color: #555;">${incidentItem.date}</span><br>
-                    <span style="color: #333; font-weight: bold;">Unique ID:</span> 
-                    <span style="color: #555;">${incidentItem.uniqueId}</span><br>
-                    </div>
-                `;
-                incidentListContainer.appendChild(item);
-                }
-                
-                // Append the container with all incidents to the main list container
-                listContainer.appendChild(incidentListContainer);
-                
-                // Add the action buttons section after displaying incidents
-                const actionButtonsSection = document.createElement('div');
-                actionButtonsSection.style.marginTop = '15px'; // Add spacing
-                actionButtonsSection.innerHTML = `
-                <div>
-                    <input type="radio" id="validIssue" name="issueStatus" value="valid">
-                    <label for="validIssue">Valid Issue</label><br>
-                    <input type="radio" id="invalidIssue" name="issueStatus" value="invalid">
-                    <label for="invalidIssue">Invalid Issue</label><br>
-                    <button style="background-color: #4CAF50; color: white; padding: 10px 15px; border: none; border-radius: 3px;" 
-                            onclick="handleIssueStatus()">Issue Solved</button>
-                </div>
-                `;
-                listContainer.appendChild(actionButtonsSection);
-                
+            userPoints = await getUserPoints(incidentItem.username);
+                    
+            let userRating = 0;
+
+            if (userPoints <= 0) {
+                userRating = 1;
+            } else if (0 < userPoints && userPoints <= 10) {
+                userRating = 2;
+            } else if (10 < userPoints && userPoints <= 20) {
+                userRating = 3;
+            } else if (20 < userPoints && userPoints <= 30) {
+                userRating = 4;
             } else {
-                listContainer.innerHTML = '<h2>Incident Details</h2>';
-                // ... existing logic to display recent incidents (optional)
+                userRating = 5;
             }
+
+            let starRating = generateStarRating(userRating);
+            console.log(userPoints, userRating, starRating);
+
+
+            item.innerHTML = `
+                <div>
+                <span style="color: #333; font-weight: bold;">Description:</span> 
+                <span style="color: #555;">${incidentItem.description}</span><br>
+                <span style="color: #333; font-weight: bold;">Reported By:</span> 
+                <span style="color: #555;">${incidentItem.username}</span><br>
+                <span style="color: #333; font-weight: bold;">User rating:</span> 
+                <span style="color: #555; font-size: 20px;">${starRating}</span><br>
+                <span style="color: #333; font-weight: bold;">Date Reported:</span> 
+                <span style="color: #555;">${incidentItem.date}</span><br>
+                <span style="color: #333; font-weight: bold;">Unique ID:</span> 
+                <span style="color: #555;">${incidentItem.uniqueId}</span><br>
+                <br><img src="${imageUrl}" alt="Incident Image" style="width: 100%; max-width: 300px; display: block; margin-bottom: 10px;">
+                </div>
+            `;
+            incidentListContainer.appendChild(item);
         }
+        
+        // Append the container with all incidents to the main list container
+        listContainer.appendChild(incidentListContainer);
+        
+        // Add the action buttons section after displaying incidents
+        const actionButtonsSection = document.createElement('div');
+        actionButtonsSection.style.marginTop = '15px'; // Add spacing
+        actionButtonsSection.innerHTML = `
+        <div>
+            <input type="radio" id="validIssue" name="issueStatus" value="valid">
+            <label for="validIssue">Valid Issue</label><br>
+            <input type="radio" id="invalidIssue" name="issueStatus" value="invalid">
+            <label for="invalidIssue">Invalid Issue</label><br>
+            <button style="background-color: #4CAF50; color: white; padding: 10px 15px; border: none; border-radius: 3px;" 
+                    onclick="handleIssueStatus()">Issue Solved</button>
+        </div>
+        `;
+        listContainer.appendChild(actionButtonsSection);
+        
+    } else {
+        listContainer.innerHTML = '<h2>Incident Details</h2>';
+        // ... existing logic to display recent incidents (optional)
+    }
+}
+
 
         function handleIssueStatus() {
 
@@ -323,8 +346,7 @@
 
         function updateStats() {
             document.getElementById('total-incidents').textContent = incidents.length;
-            const activeIncidents = incidents.filter(incident => incident.status === 'active').length;
-            document.getElementById('active-incidents').textContent = activeIncidents;
+            
         }
 
 
@@ -333,6 +355,31 @@
             const now = new Date();
             document.getElementById('last-updated').textContent = `Last updated: ${now.toLocaleString()}`;
         }
+
+        async function getUserPoints(username) {
+            return fetch('/userPoints', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({username})
+                })
+                .then (response => {
+                    return response.json();
+                })
+                .then(data => parseInt(data.userPoints));
+
+            //const data = await response.json();
+            //return(parseInt(data.userPoints));
+        }
+
+        // Function to generate star rating HTML
+        function generateStarRating(rating) {
+                const fullStar = '★';
+                const emptyStar = '☆';
+                return fullStar.repeat(rating);// + emptyStar.repeat(5 - rating);
+        }
+
     </script>
 </body>
 </html>

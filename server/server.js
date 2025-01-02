@@ -3,7 +3,7 @@ const path = require('path');
 const app = express();
 const fs = require('fs');
 const port = 3001;
-const bodyParser = require('body-parser');
+//const bodyParser = require('body-parser');
 
 app.use(express.json());
 app.use(express.static('public'));
@@ -28,35 +28,29 @@ app.get('/profile', (req, res) => {
   res.sendFile(path.join(__dirname, '../profile.html'));
 });
 
-app.use(bodyParser.json());
+//app.use(bodyParser.json());
+
 app.post('/submit-report', (req, res) => {
   const reportData = req.body;
   
-
   //Generate unique identifier
 
   const username = reportData.username;
-
-  const dateTime = new Date();
-  const dateTimeString = dateTime.toLocaleString();
-  const dateTimeISO = dateTime.toISOString()
-  .replace(/[-:T]/g, '').slice(0, 15); // YYYYMMDDHHmmss format
-
-  const formattedDateTime = `${dateTimeISO.slice(0, 8)}-${dateTimeISO.slice(8)}`; // Add hyphen
-  const uniqueId = `${username}_${formattedDateTime}`;
-  console.log ("Unique Id" + uniqueId);
+  const dateTime = reportData.dateTime;
+  const uniqueId = reportData.uniqueId;
+  const image = reportData.image;
 
   // Prepare the data to be written to a file
   const filePath = path.join(__dirname, 'data', 'reports.txt');
   const reportString = `
-  UniqueId: ${uniqueId}
-  Username: ${reportData.username}
-  Date: ${dateTimeString}
-  Category: ${reportData.category}
-  Location: ${JSON.stringify(reportData.location)}
-  Description: ${reportData.description}
-  --------------------------------------------------------------
-  `;
+UniqueId: ${uniqueId}
+Username: ${username}
+Date: ${dateTime}
+Category: ${reportData.category}
+Location: ${JSON.stringify(reportData.location)}
+Description: ${reportData.description}
+--------------------------------------------------------------
+`;
 
   // Append the report data to the file
   fs.appendFile(filePath, reportString, (err) => {
@@ -64,34 +58,26 @@ app.post('/submit-report', (req, res) => {
       console.error('Error writing to file:', err);
       return res.status(500).send('Failed to save the report');
     }
+
+    // Process the image data (e.g., decode base64, save to file)
+    const imageBuffer = Buffer.from(image.replace(/^data:image\/(png|jpeg|jpg);base64,/, ''), 'base64'); 
+    const filename = `${uniqueId}.jpg`;
+    // Save image to file (replace with your desired storage method)
+    fs.writeFileSync(path.join(__dirname, 'uploads', filename), imageBuffer); 
+
     console.log('Report saved successfully');
     res.status(200).send('Report saved successfully');
   });
 });
 
-/*
-// API endpoint to return current location
-app.get('/api/location', (req, res) => {
-  // Simulate fetching the current location (e.g., via IP or GPS)
-  res.json({
-    location: {
-      lat: 43.8707, // Example: Latitude of Markham
-      lng: -79.2238, // Example: Longitude of Markham
-    },
-  });
-});
-*/
-
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
+
 require('dotenv').config();
 const { Configuration, OpenAIApi } = require('openai');
 const { LocalIndex } = require('vectra');
-
-
-//OPENAI_API_KEY = "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";
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
@@ -107,28 +93,6 @@ async function initVectorDB() {
   }
 }
 
-app.post('/userPoints', async (req, res) => {
-  const { username } = req.body;
-  console.log(username);
-  fs.readFile('data/user_points.txt', 'utf8', (err, data) => {
-    if (err) {
-      console.error('Error reading user points file:', err);
-      return res.status(500).send('Error reading user points.');
-    }
-
-    const userPointsMap = {};
-    data.split('\n').forEach(line => {
-      if (line) {
-        const [user, points] = line.split(':');
-        userPointsMap[user] = parseInt(points);
-      }
-    });
-
-    let userPoints = userPointsMap[username];
-    console.log(userPoints);
-    res.json({ userPoints: userPoints});
-  })
-})   
 
 initVectorDB();
 
@@ -172,4 +136,27 @@ async function getEmbedding(text) {
   console.log("Debug: "+ "finish getEmbedding: " + response);
   return response.data.data[0].embedding;
 }
+
+app.post('/userPoints', async (req, res) => {
+  const { username } = req.body;
+  console.log(username);
+  fs.readFile('data/user_points.txt', 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading user points file:', err);
+      return res.status(500).send('Error reading user points.');
+    }
+
+    const userPointsMap = {};
+    data.split('\n').forEach(line => {
+      if (line) {
+        const [user, points] = line.split(':');
+        userPointsMap[user] = parseInt(points);
+      }
+    });
+
+    let userPoints = userPointsMap[username] || 0;
+    console.log(userPoints);
+    res.json({ userPoints: userPoints});
+  })
+}); 
 

@@ -181,7 +181,7 @@
       canvas.width = camera.videoWidth;
       canvas.height = camera.videoHeight;
       canvas.getContext('2d').drawImage(camera, 0, 0, canvas.width, canvas.height);
-      capturedImage.src = canvas.toDataURL('image/png');
+      capturedImage.src = canvas.toDataURL('image/jpeg');
       capturedPhoto = capturedImage.src;
       camera.style.display = 'none';
       capturedImage.style.display = 'block';
@@ -209,6 +209,8 @@
       // Fetch the stored location from localStorage
       const location = JSON.parse(localStorage.getItem('reportLocation'));
       const username = localStorage.getItem('username');
+      const dateTime = new Date().toISOString().slice(0, 19).replace(/\W/g, '');
+      const uniqueId = `${username}-${dateTime}`;
 
       if (!location) {
         alert('Location not found. Please go back to the main page and select a location.');
@@ -220,7 +222,10 @@
         username,
         location,
         category,
-        description: issueDescription
+        description: issueDescription,
+        image: capturedPhoto,
+        uniqueId,
+        dateTime
       };
 
       // Send the report data to the server

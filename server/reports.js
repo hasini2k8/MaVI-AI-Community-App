@@ -6,6 +6,9 @@ const path = require('path');
 const geolib = require('geolib'); // Import the geolib library
 const { Configuration, OpenAIApi } = require('openai');
 
+app.use(express.static('uploads'));
+app.use(express.json());
+
 // Initialize OpenAI
 
 const configuration = new Configuration({
@@ -161,7 +164,7 @@ app.post('/update-user-points', (req, res) => {
         points += pointsToAdd;
         userPointsMap[incidentItem.username] = points;
     }
-
+    
     const updatedData = Object.entries(userPointsMap)
       .map(([user, points]) => `${user}:${points}`)
       .join('\n');
@@ -177,3 +180,25 @@ app.post('/update-user-points', (req, res) => {
   });
 });
 
+app.post('/userPoints', async (req, res) => {
+  const { username } = req.body;
+  console.log(username);
+  fs.readFile('data/user_points.txt', 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading user points file:', err);
+      return res.status(500).send('Error reading user points.');
+    }
+
+    const userPointsMap = {};
+    data.split('\n').forEach(line => {
+      if (line) {
+        const [user, points] = line.split(':');
+        userPointsMap[user] = parseInt(points);
+      }
+    });
+
+    let userPoints = userPointsMap[username] || 0;
+    console.log(userPoints);
+    res.json({ userPoints: userPoints});
+  })
+});
