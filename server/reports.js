@@ -113,6 +113,12 @@ app.get('/api/incidents', async (req, res) => {
                 location = JSON.parse(locationMatch[0].split(': ')[1]);
             } 
 
+            let uniqueId = lines[0].split(': ')[1];
+            if (checkIncidentResolved(uniqueId)) {
+              console.log('checkIncidentResolvedMatch', uniqueId);
+              continue;
+            }
+
 
             if (location) {
                 incidents.push ({
@@ -202,3 +208,30 @@ app.post('/userPoints', async (req, res) => {
     res.json({ userPoints: userPoints});
   })
 });
+
+
+app.post('/resolve-incident', (req, res) => {
+  const incidentList = req.body;
+  console.log('Inside resolved incident', incidentList);
+
+  if (!incidentList) {
+    return res.status(400).send('Missing incident list in request body');
+  }
+
+  const fileStream = fs.createWriteStream('data/resolved_incidents.txt', {flags:'a'});
+
+  incidentList.forEach(incidentItem => {
+      fileStream.write(`${incidentItem.uniqueId}\n`);
+  });
+
+  fileStream.close(() => {
+    res.status(200).send('Incident List successfully resolved');
+  });
+
+});
+
+function checkIncidentResolved(uniqueId) {
+   const data = fs.readFileSync('data/resolved_incidents.txt', 'utf-8');
+   const resolvedIncidents = data.split('\n');
+   return resolvedIncidents.includes(uniqueId);
+}

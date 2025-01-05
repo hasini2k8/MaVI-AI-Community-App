@@ -35,17 +35,18 @@
 
     /* Header Styles */
     .header-widget {
-      background-color: #ffffff;
+      background-color: #148e0d;
       border-radius: 15px;
       padding: 15px;
       margin: 20px;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
+    
 
     h1 {
       font-size: 24px;
       margin: 10px 0;
-      color: #333;
+      color: #ffffff;
     }
 
     /* Map Section */
@@ -142,7 +143,7 @@
     <div class="map">
       <div id="map" style="width: 100%; height: 100%;"></div>
     </div>
-    <input id="pac-input" type="text" placeholder="Search for a location">
+    <input id="pac-input" type="text" placeholder="Search for a location or use red marker">
     
     <!-- Buttons Section -->
     <div class="buttons">
@@ -195,42 +196,54 @@
   
     // Initialize the search box
     const input = document.getElementById('pac-input');
-    const searchBox = new google.maps.places.SearchBox(input);
-  
-    map.addListener('bounds_changed', () => {
-      searchBox.setBounds(map.getBounds());
-    });
-  
-    searchBox.addListener('places_changed', () => {
-      const places = searchBox.getPlaces();
-  
-      if (places.length == 0) {
-        return;
-      }
-  
-      const bounds = new google.maps.LatLngBounds();
-      places.forEach((place) => {
-        if (!place.geometry || !place.geometry.location) {
-          console.log("Returned place contains no geometry");
-          return;
-        }
-  
-        marker.setPosition(place.geometry.location);
-        storeLocation(place.geometry.location.toJSON());
-  
-        if (place.geometry.viewport) {
-          bounds.union(place.geometry.viewport);
-        } else {
-          bounds.extend(place.geometry.location);
-        }
-      });
-      map.fitBounds(bounds);
-    });
-  
-    // Update stored location when marker is dragged
-    marker.addListener('dragend', () => {
-      storeLocation(marker.getPosition().toJSON());
-    });
+const searchBox = new google.maps.places.SearchBox(input);
+
+map.addListener('bounds_changed', () => {
+  searchBox.setBounds(map.getBounds());
+});
+
+searchBox.addListener('places_changed', () => {
+  const places = searchBox.getPlaces();
+
+  if (places.length == 0) {
+    return;
+  }
+
+  const bounds = new google.maps.LatLngBounds();
+  places.forEach((place) => {
+    if (!place.geometry || !place.geometry.location) {
+      console.log("Returned place contains no geometry");
+      return;
+    }
+
+    marker.setPosition(place.geometry.location);
+    storeLocation(place.geometry.location.toJSON());
+
+    // Update search box with coordinates 
+    input.value = `${place.geometry.location.lat()}, ${place.geometry.location.lng()}`; 
+
+    if (place.geometry.viewport) {
+      bounds.union(place.geometry.viewport);
+    } else {
+      bounds.extend(place.geometry.location);
+    }
+  });
+  map.fitBounds(bounds);
+});
+
+// Update search box and stored location when marker is dragged
+marker.addListener('dragend', () => {
+  const newLatLng = marker.getPosition();
+
+  // Update search box with new coordinates
+  input.value = `${newLatLng.lat()}, ${newLatLng.lng()}`; 
+
+  storeLocation(newLatLng.toJSON());
+});
+
+function storeLocation(location) {
+  localStorage.setItem('reportLocation', JSON.stringify(location));
+}
   }
   
   function storeLocation(location) {

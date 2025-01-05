@@ -1,8 +1,8 @@
 HasiniTheScienceGuy:20
-hasini2k8:50
-hasiniTest:20
-inbasri2k2:20
-hvijayin:25
+hasini2k8:80
+hasiniTest:40
+inbasri2k2:0
+hvijayin:45
 Inbasri:-5
 jackSparrow01:10
 stephen:10
