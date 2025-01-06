@@ -63,7 +63,7 @@ function mergeSimilarIncidents(origIncidents, proximityThreshold, timeframe) {
           continue; // Skip if categories don't match
         }
   
-        // Calculate distance between two points (you can use a library like 'geolib')
+        // Calculate distance between two points 
         const distance = geolib.getDistance(
           { latitude: incident1.latitude, longitude: incident1.longitude },
           { latitude: incident2.latitude, longitude: incident2.longitude }
